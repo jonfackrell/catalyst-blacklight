@@ -53,7 +53,12 @@ class ReservesController < CatalogController
   end
 
   def show
-    @course = ReservesCourse.includes(:bib_ids).find(params[:id])
+
+    # This is a temporary fix for redirecting all missing reserves
+    # We may want to disable reserves completely and redirect all requests
+    unless @course = ReservesCourse.includes(:bib_ids).find_by(course_id: params[:id])
+      redirect_to "/reserves" and return if @course.nil?
+    end
 
     @bib_ids                  =  @course.bib_ids
     solr_ids                  = @bib_ids.collect {|j| "bib_" + j.bib_id.to_s}
