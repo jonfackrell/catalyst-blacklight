@@ -57,7 +57,7 @@ class ReservesController < CatalogController
     # This is a temporary fix for redirecting all missing reserves
     # We may want to disable reserves completely and redirect all requests
     unless @course = ReservesCourse.includes(:bib_ids).find_by(course_id: params[:id])
-      redirect_to "/reserves" and return if @course.nil?
+      raise ActionController::RoutingError.new('Not Found')
     end
 
     @bib_ids                  =  @course.bib_ids
